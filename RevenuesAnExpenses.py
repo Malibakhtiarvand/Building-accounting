@@ -1,5 +1,6 @@
 from tkinter import*
 from tkinter import messagebox
+from typing import ChainMap
 
 widnow = Tk()
 widnow.title('Revenues an expenses')
@@ -42,20 +43,86 @@ def showReports(lineShow:int):
 
 idList=[0]  
 def report_def ():
-    widnowReport=Toplevel(widnow)
-    widnowReport.title('reports')
-    widnowReport.geometry('300x400')
-    widnowReport.configure(bg='red')
+    root = Tk()
 
+    root.title('Full Window Scrolling X Y Scrollbar Example')
+
+    root.geometry("1350x400")
+
+
+
+    # Create A Main frame
+
+    main_frame = Frame(root)
+
+    main_frame.pack(fill=BOTH,expand=1)
+
+
+
+    # Create Frame for X Scrollbar
+
+    sec = Frame(main_frame)
+
+    sec.pack(fill=X,side=BOTTOM)
+
+
+
+    # Create A Canvas
+
+    my_canvas = Canvas(main_frame)
+
+    my_canvas.pack(side=LEFT,fill=BOTH,expand=1)
+
+
+
+    # Add A Scrollbars to Canvas
+
+    x_scrollbar = Scrollbar(sec,orient=HORIZONTAL,command=my_canvas.xview)
+
+    x_scrollbar.pack(side=BOTTOM,fill=X)
+
+    y_scrollbar = Scrollbar(main_frame,orient=VERTICAL,command=my_canvas.yview)
+    y_scrollbar.pack(side=RIGHT,fill=Y)
+
+
+
+    # Configure the canvas
+
+    my_canvas.configure(xscrollcommand=x_scrollbar.set)
+
+    my_canvas.configure(yscrollcommand=y_scrollbar.set)
+
+    my_canvas.bind("<Configure>",lambda e: my_canvas.config(scrollregion= my_canvas.bbox(ALL))) 
+
+
+
+    # Create Another Frame INSIDE the Canvas
+
+    second_frame = Frame(my_canvas)
+
+
+
+    # Add that New Frame a Window In The Canvas
+
+    my_canvas.create_window((0,0),window= second_frame, anchor="nw")
+
+
+    count=0
     for i in listLine:
-        Button(widnowReport,text=i[:i.index(':')-1],command=lambda:showReports(idList[-1])).pack()
-        if len(idList) < len(listLine):
-            idList.append(idList[-1]+1)
-            print(idList)
-    scrollItems=Scrollbar(widnowReport)
-    scrollItems.pack( side = 'right', fill = 'y' )
-    scrollItems.config()
-    widnowReport.mainloop()
+        dictItem=[]
+        dictItem.append([i,count])
+        count+=1
+        items=Button(second_frame,text=i[:i.index(':')-1])
+        items['command']=lambda:showReports()
+
+
+    if len(idList) < len(listLine):
+        idList.append(idList[-1]+1)
+        print(idList)
+
+    # for thing in listLine:
+    #     Button(second_frame ,text=thing[:thing.index(':')-1],command=lambda:showReports(listLine.index(thing))).pack()
+
 
 
 cost_intVar = IntVar()
